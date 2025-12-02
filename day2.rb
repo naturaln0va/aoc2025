@@ -95,10 +95,40 @@ class Solver
   end
 
   def solve_second(input)
-    answer = 0
     lines = input.lines.map(&:strip)
-    numbers = input.split.map { |s| s.to_i }
-    answer
+    ranges = input.split(",").map { |r|
+      from, to = r.split("-").map(&:to_i)
+      range = from..to
+    }
+
+    invalid = Array.new
+
+    ranges.each do |r|
+      r.each do |i|
+        if is_repeating?(i)
+          invalid << i
+        end
+      end
+    end
+
+    invalid.sum
+  end
+
+  def is_repeating?(num)
+    str = num.to_s
+    mid = str.length / 2
+    candidate = str[0]
+
+    while candidate.length <= mid
+      test = candidate * (str.length / candidate.length)
+      if test == str
+        return true
+      end
+
+      candidate = str[0..candidate.length]
+    end
+
+    false
   end
 end
 
