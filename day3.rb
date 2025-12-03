@@ -98,7 +98,40 @@ class Solver
   def solve_second(input)
     answer = 0
     lines = input.lines.map(&:strip)
-    numbers = input.split.map { |s| s.to_i }
+
+    target = 12
+
+    lines.each do |line|
+      numbers = line.chars.map { |s| s.to_i }
+      working = numbers
+      count_to_remove = numbers.length - target
+
+      (0...count_to_remove).each do |i|
+        offset = 0
+        while offset < numbers.length - 1
+          a = working[offset]
+          b = working[offset + 1]
+          if a < b
+            working.delete_at(offset)
+            break
+          elsif offset == numbers.length - 2
+            if a == b
+              working.delete_at(offset)
+              break
+            else
+              working.delete_at(offset + 1)
+              break
+            end
+          end
+
+          offset += 1
+        end
+      end
+
+      jolt = working.join.to_i
+      answer += jolt
+    end
+
     answer
   end
 end
