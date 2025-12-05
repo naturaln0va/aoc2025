@@ -124,10 +124,33 @@ class Solver
   end
 
   def solve_second(input)
-    answer = 0
-    lines = input.lines.map(&:strip)
-    numbers = input.split.map { |s| s.to_i }
-    answer
+    parts = input.split("\n\n")
+    first = parts[0].lines.map(&:strip)
+
+    ranges = first
+      .map { |r|
+        from, to = r.split("-").map(&:to_i)
+        range = from..to
+      }
+      .sort { |a, b| a.min <=> b.min }
+      .reverse
+
+    offset = 0
+    while offset < ranges.length - 1
+      a = ranges[offset]
+      b = ranges[offset + 1]
+      if a.overlap?(b)
+        min_min = [a.min, b.min].min
+        max_max = [a.max, b.max].max
+        ranges[offset] = min_min..max_max
+        ranges.delete_at(offset + 1)
+        offset = 0
+      else
+        offset += 1
+      end
+    end
+
+    ranges.map(&:count).sum
   end
 end
 
