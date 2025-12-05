@@ -83,7 +83,6 @@ class Solver
   def solve_first(input)
     answer = 0
     lines = input.lines.map(&:strip)
-
     grid = lines.map(&:chars)
 
     grid.each_with_index do |col, y|
@@ -93,6 +92,35 @@ class Solver
         count = neighbors.count("@")
         answer += 1 if count < 4
       end
+    end
+
+    answer
+  end
+
+  def solve_second(input)
+    answer = 0
+    lines = input.lines.map(&:strip)
+    grid = lines.map(&:chars)
+    removed = 1
+
+    while removed > 0
+      removed = 0
+      temp_grid = grid
+
+      grid.each_with_index do |col, y|
+        col.each_with_index do |row, x|
+          next unless row == "@"
+          neighbors = neighbors8(grid, x, y)
+          count = neighbors.count("@")
+          if count < 4
+            answer += 1
+            temp_grid[y][x] = "x"
+            removed += 1
+          end
+        end
+      end
+
+      grid = temp_grid
     end
 
     answer
@@ -121,13 +149,6 @@ class Solver
 
       result << grid[ny][nx]
     end
-  end
-
-  def solve_second(input)
-    answer = 0
-    lines = input.lines.map(&:strip)
-    numbers = input.split.map { |s| s.to_i }
-    answer
   end
 end
 
