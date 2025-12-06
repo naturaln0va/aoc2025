@@ -55,9 +55,9 @@ class Solver
   def test_case
     puts("===TEST===")
     first_test_input = "123 328  51 64 
-     45 64  387 23 
-      6 98  215 314
-    *   +   *   +  "
+ 45 64  387 23 
+  6 98  215 314
+*   +   *   +  "
     first_answer = solve_first(first_test_input)
     puts("1st answer: #{first_answer}")
     second_test_input = first_test_input
@@ -98,8 +98,35 @@ class Solver
 
   def solve_second(input)
     answer = 0
-    lines = input.lines.map(&:strip)
-    numbers = input.split.map { |s| s.to_i }
+    lines = input.lines.map { |l| l.delete("\n") }
+    grid = lines.map(&:chars)
+
+    first_row = grid[0]
+    nums = Array.new
+    (0..first_row.length - 1).each do |x|
+      offset = first_row.length - x - 1
+
+      vals = Array.new
+      (0..grid.length - 1).each do |y|
+        vals << grid[y][offset]
+      end
+
+      last = vals.pop
+      candidate = vals.join.strip
+      next if candidate.empty?
+
+      val_num = candidate.to_i
+      nums << val_num
+
+      if last == "*"
+        answer += nums.inject(1, :*)
+        nums.clear
+      elsif last == "+"
+        answer += nums.sum
+        nums.clear
+      end
+    end
+
     answer
   end
 end
