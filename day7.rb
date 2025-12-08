@@ -116,10 +116,30 @@ class Solver
   end
 
   def solve_second(input)
-    answer = 0
     lines = input.lines.map(&:strip)
-    numbers = input.split.map { |s| s.to_i }
-    answer
+    grid = lines.map(&:chars)
+
+    start = grid[0].index("S")
+    counts = Hash.new(0)
+    counts[start] = 1
+
+    grid.each do |row|
+      new_counts = Hash.new(0)
+
+      counts.each do |col, num|
+        cell = row[col]
+        if cell == "^"
+          new_counts[col - 1] += num
+          new_counts[col + 1] += num
+        else
+          new_counts[col] += num
+        end
+      end
+
+      counts = new_counts
+    end
+
+    counts.values.sum
   end
 end
 
